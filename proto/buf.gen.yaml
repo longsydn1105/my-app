@@ -1,0 +1,11 @@
+version: v1
+plugins:
+  # Thợ xây Protobuf
+  - plugin: go
+    out: ../backend/gen
+    opt: paths=source_relative
+  
+  # Thợ xây ConnectRPC
+  - plugin: connect-go
+    out: ../backend/gen
+    opt: paths=source_relative

@@ -1,0 +1,59 @@
+# ==========================================
+# 1. BÍ MẬT QUỐC GIA (Chống rò rỉ mật khẩu)
+# ==========================================
+.env
+.env.*.local
+*.pem
+*.key
+
+# ==========================================
+# 2. BACKEND (Golang)
+# ==========================================
+# File thực thi (build ra nặng máy, không push lên git)
+/backend/bin/
+/backend/main
+/backend/server
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Thư mục vendor (nếu dùng go mod vendor)
+/backend/vendor/
+
+# ==========================================
+# 3. FRONTEND (Next.js / React / Node.js)
+# ==========================================
+# Cái hố đen vũ trụ nặng hàng GB
+node_modules/
+
+# Thư mục build của Next.js
+.next/
+out/
+build/
+
+# File log rác của npm/yarn/pnpm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ==========================================
+# 4. HỆ ĐIỀU HÀNH & CÔNG CỤ CODE
+# ==========================================
+# macOS & Ubuntu rác hệ thống
+.DS_Store
+.AppleDouble
+.LSOverride
+*~
+.Trash-*
+
+# IDE / Editor (VS Code, Neovim)
+.vscode/
+*.swp
+*.swo
+Session.vim
+.idea/
