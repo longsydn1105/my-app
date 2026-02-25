@@ -5,6 +5,7 @@ import (
 
 	"github.com/longdaica/my-app/backend/interfaces"
 	"github.com/longdaica/my-app/backend/model"
+	"github.com/longdaica/my-app/backend/pkg/jwt"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -35,19 +36,23 @@ func (s *authService) RegisterLogic(email, password, name string) error {
 	}
 	return s.userRepo.CreateUser(newUser)
 }
-func (s *authService) Login(email, password string) error {
+func (s *authService) Login(email, password string) (string, error) {
 	user, err := s.userRepo.FindByEmail(email)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return errors.New("tài khoản chưa tồn tại, vui lòng đăng ký trước")
+			return "", errors.New("tài khoản chưa tồn tại, vui lòng đăng ký trước")
 		}
-		return err
+		return "", err
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		return errors.New("sai mật khẩu!!")
-	} else {
-		return nil
+		return "", errors.New("sai mật khẩu!!")
 	}
+
+	token, err := jwt.GenerateToken(user.ID, user.Email)
+	if err != nil {
+		return "", errors.New("lỗi token: " + err.Error())
+	}
+	return token, nil
 }

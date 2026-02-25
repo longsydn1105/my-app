@@ -47,13 +47,13 @@ func (h *AuthHandler) Login(
 	email := req.Msg.GetEmail()
 	password := req.Msg.GetPassword()
 
-	err := h.authService.Login(email, password)
+	token, err := h.authService.Login(email, password)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, err)
 	}
 
 	res := connect.NewResponse(&authv1.LoginResponse{
-		Token: "JWT_TOKEN",
+		Token: token,
 	})
 
 	return res, nil
