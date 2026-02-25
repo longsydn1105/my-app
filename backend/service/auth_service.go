@@ -1,9 +1,12 @@
 package service
 
 import (
+	"errors"
+
 	"github.com/longdaica/my-app/backend/interfaces"
 	"github.com/longdaica/my-app/backend/model"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 type authService struct {
@@ -16,7 +19,11 @@ func NewAuthService(repo interfaces.UserRepositoryInterface) interfaces.AuthServ
 
 func (s *authService) RegisterLogic(email, password, name string) error {
 	_, err := s.userRepo.FindByEmail(email)
-	if err != nil {
+	if err == nil {
+		return errors.New("email này đã được sử dụng rồi!!")
+	}
+
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return err
 	}
 
@@ -31,12 +38,15 @@ func (s *authService) RegisterLogic(email, password, name string) error {
 func (s *authService) Login(email, password string) error {
 	user, err := s.userRepo.FindByEmail(email)
 	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return errors.New("tài khoản chưa tồn tại, vui lòng đăng ký trước")
+		}
 		return err
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		return err
+		return errors.New("sai mật khẩu!!")
 	} else {
 		return nil
 	}

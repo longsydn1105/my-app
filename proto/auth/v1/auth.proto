@@ -4,6 +4,10 @@ package auth.v1;
 
 option go_package = "github.com/longdaica/my-app/backend/gen/auth/v1;authv1";
 
+service AuthService {
+  rpc Register(RegisterRequest) returns (RegisterResponse);
+  rpc Login(LoginRequest) returns (LoginResponse);
+}
 
 message RegisterRequest{
   string email = 1;

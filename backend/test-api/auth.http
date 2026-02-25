@@ -1,0 +1,34 @@
+### =====================================
+### 1. ĐĂNG KÝ (REGISTER)
+### =====================================
+POST http://localhost:8080/auth.v1.AuthService/Register
+Content-Type: application/json
+
+{
+  "email": "longdaica@gmail.com",
+  "password": "123456",
+  "name": "Long Đại Ca"
+}
+
+
+### =====================================
+### 2. ĐĂNG NHẬP (LOGIN)
+### =====================================
+POST http://localhost:8080/auth.v1.AuthService/Login
+Content-Type: application/json
+
+{
+  "email": "longdaica@gmail.com",
+  "password": "123456"
+}
+
+### =====================================
+### 3. ĐĂNG NHẬP SAI PASS (Test lỗi)
+### =====================================
+POST http://localhost:8080/auth.v1.AuthService/Login
+Content-Type: application/json
+
+{
+  "email": "longdaica@example.com",
+  "password": "sai_pass_roi_haha"
+}

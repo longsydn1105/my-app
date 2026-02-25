@@ -7,12 +7,11 @@
 package authv1
 
 import (
+	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
+	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
-
-	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
-	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 )
 
 const (
@@ -237,7 +236,10 @@ const file_auth_v1_auth_proto_rawDesc = "" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x02 \x01(\tR\bpassword\"%\n" +
 	"\rLoginResponse\x12\x14\n" +
-	"\x05token\x18\x01 \x01(\tR\x05tokenB8Z6github.com/longdaica/my-app/backend/gen/auth/v1;authv1b\x06proto3"
+	"\x05token\x18\x01 \x01(\tR\x05token2\x86\x01\n" +
+	"\vAuthService\x12?\n" +
+	"\bRegister\x12\x18.auth.v1.RegisterRequest\x1a\x19.auth.v1.RegisterResponse\x126\n" +
+	"\x05Login\x12\x15.auth.v1.LoginRequest\x1a\x16.auth.v1.LoginResponseB8Z6github.com/longdaica/my-app/backend/gen/auth/v1;authv1b\x06proto3"
 
 var (
 	file_auth_v1_auth_proto_rawDescOnce sync.Once
@@ -251,19 +253,20 @@ func file_auth_v1_auth_proto_rawDescGZIP() []byte {
 	return file_auth_v1_auth_proto_rawDescData
 }
 
-var (
-	file_auth_v1_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
-	file_auth_v1_auth_proto_goTypes  = []any{
-		(*RegisterRequest)(nil),  // 0: auth.v1.RegisterRequest
-		(*RegisterResponse)(nil), // 1: auth.v1.RegisterResponse
-		(*LoginRequest)(nil),     // 2: auth.v1.LoginRequest
-		(*LoginResponse)(nil),    // 3: auth.v1.LoginResponse
-	}
-)
-
+var file_auth_v1_auth_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_auth_v1_auth_proto_goTypes = []any{
+	(*RegisterRequest)(nil),  // 0: auth.v1.RegisterRequest
+	(*RegisterResponse)(nil), // 1: auth.v1.RegisterResponse
+	(*LoginRequest)(nil),     // 2: auth.v1.LoginRequest
+	(*LoginResponse)(nil),    // 3: auth.v1.LoginResponse
+}
 var file_auth_v1_auth_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
+	0, // 0: auth.v1.AuthService.Register:input_type -> auth.v1.RegisterRequest
+	2, // 1: auth.v1.AuthService.Login:input_type -> auth.v1.LoginRequest
+	1, // 2: auth.v1.AuthService.Register:output_type -> auth.v1.RegisterResponse
+	3, // 3: auth.v1.AuthService.Login:output_type -> auth.v1.LoginResponse
+	2, // [2:4] is the sub-list for method output_type
+	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -282,7 +285,7 @@ func file_auth_v1_auth_proto_init() {
 			NumEnums:      0,
 			NumMessages:   4,
 			NumExtensions: 0,
-			NumServices:   0,
+			NumServices:   1,
 		},
 		GoTypes:           file_auth_v1_auth_proto_goTypes,
 		DependencyIndexes: file_auth_v1_auth_proto_depIdxs,
