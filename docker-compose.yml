@@ -5,7 +5,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: app_db
-      MYSQL_USER: longdaica MYSQL_PASSWORD: 123456
+      MYSQL_USER: longdaica
+      MYSQL_PASSWORD: 123456
     ports:
       - "3307:3306"
     volumes:
