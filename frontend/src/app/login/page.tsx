@@ -1,0 +1,101 @@
+"use client";
+
+import { LoginRequest } from "@/gen/auth/v1/auth_pb";
+import { authClient } from "@/lib/client";
+import { ConnectError } from "@connectrpc/connect";
+import { Alert, Box, Button, Container, TextField, Typography } from "@mui/material";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+
+type LoginFormValues = {
+  email: string;
+  password: string;
+};
+
+export default function LoginPage() {
+  const router = useRouter();
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginFormValues>({
+    defaultValues: { email: "", password: "" },
+  });
+
+  const onSubmit = async (data: LoginFormValues) => {
+    try {
+      setMessage(null);
+      const req = new LoginRequest({
+        email: data.email,
+        password: data.password,
+      });
+      const res = await authClient.login(req);
+
+      localStorage.setItem("token", res.token);
+      setMessage({ type: "success", text: "Dang nhap thanh cong" });
+    } catch (err) {
+      const connectErr = ConnectError.from(err);
+      setMessage({ type: "error", text: connectErr.message || "Sai mat khau hoac tai khoan" });
+    }
+
+    setTimeout(() => {
+      router.push("/");
+    }, 1000);
+  };
+
+  return (
+    <Container component="main" maxWidth="xs">
+      <Box
+        sx={{
+          marginTop: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          backgroundColor: "background.paper",
+          padding: 4,
+          borderRadius: 2,
+          boxShadow: 3,
+        }}
+      >
+        <Typography component="h1" variant="h5" sx={{ mb: 3, fontWeight: "bold", color: "text.primary" }}>
+          Đăng nhập hệ thống
+        </Typography>
+
+        {message && (
+          <Alert severity={message.type} sx={{ width: "100%", mb: 2 }}>
+            {message.text}
+          </Alert>
+        )}
+
+        <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ width: "100%" }}>
+          <TextField
+            margin="normal"
+            fullWidth
+            label="Email"
+            type="email"
+            {...register("email", { required: "Vui long nhap email" })}
+            error={!!errors.email}
+            helperText={errors.email?.message as string}
+          />
+
+          <TextField
+            margin="normal"
+            fullWidth
+            label="Mat khau"
+            type="password"
+            {...register("password", { required: "Vui long nhap mat khau" })}
+            error={!!errors.password}
+            helperText={errors.password?.message as string}
+          />
+
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, py: 1.5 }}>
+            Dang nhap
+          </Button>
+        </Box>
+      </Box>
+    </Container>
+  );
+}

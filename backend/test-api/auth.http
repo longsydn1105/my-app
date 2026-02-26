@@ -5,9 +5,9 @@ POST http://localhost:8080/auth.v1.AuthService/Register
 Content-Type: application/json
 
 {
-  "email": "longdaica@gmail.com",
+  "email": "longsydn1105@gmail.com",
   "password": "123456",
-  "name": "Long Đại Ca"
+  "name": "Long PS"
 }
 
 
