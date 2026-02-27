@@ -63,7 +63,7 @@ func (s *authService) Login(email, password string) (string, error) {
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		return "", errors.New("sai mật khẩu!!")
+		return "", errors.New("sai tài khoản,  mật khẩu!!")
 	}
 
 	token, err := jwt.GenerateToken(user.ID, user.Email)

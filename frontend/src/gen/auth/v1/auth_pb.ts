@@ -21,7 +21,12 @@ export class RegisterRequest extends Message<RegisterRequest> {
   password = "";
 
   /**
-   * @generated from field: string name = 3;
+   * @generated from field: string confirm_password = 3;
+   */
+  confirmPassword = "";
+
+  /**
+   * @generated from field: string name = 4;
    */
   name = "";
 
@@ -35,7 +40,8 @@ export class RegisterRequest extends Message<RegisterRequest> {
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "email", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "password", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "confirm_password", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "name", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): RegisterRequest {

@@ -2,14 +2,14 @@
 
 import { Box, Button, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 export default function Home() {
   const router = useRouter();
   // const [isChecking, setIsChecking] = useState(true)
   // useEffect((), [router])
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    Cookies.remove("token");
     router.push("/login");
   };
 

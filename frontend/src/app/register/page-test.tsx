@@ -8,16 +8,27 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { authService } from "../services/auth.service";
 import { PlainMessage } from "@bufbuild/protobuf";
+import { InferType, object, string } from "yup";
 
+const userSchema = object({
+  name: string().required(),
+  email: string().email(),
+  password: string().required(),
+  confirmPassword: string().required(),
+});
+
+export type User = InferType<typeof userSchema>;
+//tạo schema
 export default function RegisterPage() {
   const router = useRouter();
+
   // Khoi tao react hook form
   const {
     register,
     handleSubmit,
     getValues,
     formState: { errors },
-  } = useForm({
+  } = useForm<User>({
     defaultValues: {
       email: "",
       password: "",
@@ -97,6 +108,7 @@ export default function RegisterPage() {
           />
 
           <TextField
+            // name="password"
             margin="normal"
             fullWidth
             label="Mat Khau"
@@ -105,22 +117,16 @@ export default function RegisterPage() {
               required: "Vui long nhap mat khau",
               minLength: { value: 6, message: "Pass ngắn quá, ít nhất 6 ký tự" },
             })}
+            // slotProps={{min}}
           />
 
           <TextField
             margin="normal"
             fullWidth
+            //variant="special"
             label="Xac nhan mat khau"
             type="password"
-            {...register("confirmPassword", {
-              required: "Vui long nhap xac nhan mat khau",
-              validate: (value: string) => {
-                if (value !== getValues("password")) {
-                  return "Hai mat khau khong khop!";
-                }
-                return true;
-              },
-            })}
+            {...register("confirmPassword")}
             error={!!errors.confirmPassword}
             helperText={errors.confirmPassword?.message as string}
           />
@@ -129,9 +135,9 @@ export default function RegisterPage() {
             Dang ky ngay
           </Button>
 
-          <Box sx={{ textAlign: "center", mt: 2 }}>
+          <Box textAlign="center" mt={2}>
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              Đã có tài khoản?{" "}
+              Đã có tài khoản?&nbsp;
               <Link href="/login" style={{ color: "#1976d2", textDecoration: "none", fontWeight: "bold" }}>
                 Đăng nhập luôn
               </Link>

@@ -1,17 +1,14 @@
 "use client";
 
-import { LoginRequest } from "@/gen/auth/v1/auth_pb";
-import { authClient } from "@/lib/client";
-import { ConnectError } from "@connectrpc/connect";
 import { Alert, Box, Button, Container, TextField, Typography } from "@mui/material";
+import Cookies from "js-cookie";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-
-type LoginFormValues = {
-  email: string;
-  password: string;
-};
+import { authService } from "../services/auth.service";
+import { PlainMessage } from "@bufbuild/protobuf";
+import { LoginRequest } from "@/gen/auth/v1/auth_pb";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -21,25 +18,21 @@ export default function LoginPage() {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormValues>({
+  } = useForm({
     defaultValues: { email: "", password: "" },
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
-    try {
-      setMessage(null);
-      const req = new LoginRequest({
-        email: data.email,
-        password: data.password,
-      });
-      const res = await authClient.login(req);
+  const onSubmit = async (data: PlainMessage<LoginRequest>) => {
+    setMessage(null);
+    const { data: res, error } = await authService.login(data);
 
-      localStorage.setItem("token", res.token);
-      setMessage({ type: "success", text: "Dang nhap thanh cong" });
-    } catch (err) {
-      const connectErr = ConnectError.from(err);
-      setMessage({ type: "error", text: connectErr.message || "Sai mat khau hoac tai khoan" });
+    if (error) {
+      setMessage({ type: "error", text: error });
+      return;
     }
+
+    Cookies.set("token", res!.token, { expires: 1, path: "/" });
+    setMessage({ type: "success", text: "Đăng nhập thành công" });
 
     setTimeout(() => {
       router.push("/");
@@ -94,6 +87,15 @@ export default function LoginPage() {
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, py: 1.5 }}>
             Dang nhap
           </Button>
+
+          <Box sx={{ textAlign: "center", mt: 2 }}>
+            <Typography variant="body2" sx={{ color: "text.secondary" }}>
+              Chưa có tài khoản{" "}
+              <Link href="/register" style={{ color: "#1976d2", textDecoration: "none", fontWeight: "bold" }}>
+                Đăng ký tại đây
+              </Link>
+            </Typography>
+          </Box>
         </Box>
       </Box>
     </Container>
