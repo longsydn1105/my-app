@@ -11,7 +11,8 @@ import (
 
 func SetupDI(db *gorm.DB) *http.ServeMux {
 	userRepo := repository.NewUserRepository(db)
-	userService := service.NewAuthService(userRepo)
+	mailSvc := service.NewEmailService()
+	userService := service.NewAuthService(userRepo, mailSvc)
 	authHandler := handler.NewAuthHandler(userService)
 
 	mux := http.NewServeMux()

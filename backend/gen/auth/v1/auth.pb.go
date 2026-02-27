@@ -22,12 +22,13 @@ const (
 )
 
 type RegisterRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Email         string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
-	Password      string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
-	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Email           string                 `protobuf:"bytes,1,opt,name=email,proto3" json:"email,omitempty"`
+	Password        string                 `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
+	ConfirmPassword string                 `protobuf:"bytes,3,opt,name=confirm_password,json=confirmPassword,proto3" json:"confirm_password,omitempty"`
+	Name            string                 `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *RegisterRequest) Reset() {
@@ -70,6 +71,13 @@ func (x *RegisterRequest) GetEmail() string {
 func (x *RegisterRequest) GetPassword() string {
 	if x != nil {
 		return x.Password
+	}
+	return ""
+}
+
+func (x *RegisterRequest) GetConfirmPassword() string {
+	if x != nil {
+		return x.ConfirmPassword
 	}
 	return ""
 }
@@ -225,11 +233,12 @@ var File_auth_v1_auth_proto protoreflect.FileDescriptor
 
 const file_auth_v1_auth_proto_rawDesc = "" +
 	"\n" +
-	"\x12auth/v1/auth.proto\x12\aauth.v1\"W\n" +
+	"\x12auth/v1/auth.proto\x12\aauth.v1\"\x82\x01\n" +
 	"\x0fRegisterRequest\x12\x14\n" +
 	"\x05email\x18\x01 \x01(\tR\x05email\x12\x1a\n" +
-	"\bpassword\x18\x02 \x01(\tR\bpassword\x12\x12\n" +
-	"\x04name\x18\x03 \x01(\tR\x04name\",\n" +
+	"\bpassword\x18\x02 \x01(\tR\bpassword\x12)\n" +
+	"\x10confirm_password\x18\x03 \x01(\tR\x0fconfirmPassword\x12\x12\n" +
+	"\x04name\x18\x04 \x01(\tR\x04name\",\n" +
 	"\x10RegisterResponse\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage\"@\n" +
 	"\fLoginRequest\x12\x14\n" +

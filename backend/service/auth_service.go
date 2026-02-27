@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/longdaica/my-app/backend/interfaces"
 	"github.com/longdaica/my-app/backend/model"
@@ -11,11 +12,15 @@ import (
 )
 
 type authService struct {
-	userRepo interfaces.UserRepositoryInterface
+	userRepo     interfaces.UserRepositoryInterface
+	emailService interfaces.EmailServiceInterface
 }
 
-func NewAuthService(repo interfaces.UserRepositoryInterface) interfaces.AuthServiceInterface {
-	return &authService{userRepo: repo}
+func NewAuthService(repo interfaces.UserRepositoryInterface, mailSvc interfaces.EmailServiceInterface) interfaces.AuthServiceInterface {
+	return &authService{
+		userRepo:     repo,
+		emailService: mailSvc,
+	}
 }
 
 func (s *authService) RegisterLogic(email, password, name string) error {
@@ -34,7 +39,18 @@ func (s *authService) RegisterLogic(email, password, name string) error {
 		Password: string(hashedPassword),
 		Name:     name,
 	}
-	return s.userRepo.CreateUser(newUser)
+	err = s.userRepo.CreateUser(newUser)
+	if err != nil {
+		return err // Lỗi lưu DB thì cook
+	}
+
+	go func() {
+		errMail := s.emailService.SendWelcomeToMail(newUser.Email, newUser.Name)
+		if errMail != nil {
+			fmt.Println("❌ Lỗi gửi mail cho", newUser.Email, ":", errMail.Error())
+		}
+	}()
+	return nil
 }
 func (s *authService) Login(email, password string) (string, error) {
 	user, err := s.userRepo.FindByEmail(email)
@@ -47,7 +63,7 @@ func (s *authService) Login(email, password string) (string, error) {
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		return "", errors.New("sai mật khẩu!!")
+		return "", errors.New("sai tài khoản,  mật khẩu!!")
 	}
 
 	token, err := jwt.GenerateToken(user.ID, user.Email)
