@@ -92,8 +92,9 @@ export default function RegisterPage() {
               required: "Vui long nhap email",
               pattern: { value: /^\S+@\S+$/i, message: "email sai dinh dang" },
             })}
+            slotProps={{ htmlInput: { "data-last-active-input": undefined } as any }}
             error={!!errors.email}
-            helperText={errors.name?.message as string}
+            helperText={errors.email?.message as string}
           />
 
           <TextField
