@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse } from "./auth_pb";
+import { LoginRequest, LoginResponse, RefreshTokenRequest, RefreshTokenResponse, RegisterRequest, RegisterResponse } from "./auth_pb";
 import { MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -28,6 +28,15 @@ export const AuthService = {
       name: "Login",
       I: LoginRequest,
       O: LoginResponse,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc auth.v1.AuthService.RefreshToken
+     */
+    refreshToken: {
+      name: "RefreshToken",
+      I: RefreshTokenRequest,
+      O: RefreshTokenResponse,
       kind: MethodKind.Unary,
     },
   }

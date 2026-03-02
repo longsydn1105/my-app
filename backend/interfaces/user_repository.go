@@ -9,3 +9,5 @@ type UserRepositoryInterface interface {
 	FindByEmail(email string) (*model.User, error)
 }
 
+
+
