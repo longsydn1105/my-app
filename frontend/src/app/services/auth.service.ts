@@ -13,7 +13,7 @@ export const authService = {
       const connectErr = ConnectError.from(err);
       return {
         data: null,
-        error: connectErr.message || "Sai mật khẩu hoặc tài khoản rồi!",
+        error: connectErr.rawMessage || "Incorrect password or account",
       };
     }
   },
@@ -27,7 +27,7 @@ export const authService = {
       const connectErr = ConnectError.from(err);
       return {
         data: null,
-        error: connectErr.message || "Lỗi đăng ký rồi, check lại xem!",
+        error: connectErr.rawMessage || "Email already exits!",
       };
     }
   },

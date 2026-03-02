@@ -30,7 +30,7 @@ func (h *AuthHandler) Register(
 	err := h.authService.RegisterLogic(email, password, name)
 	if err != nil {
 		// tra ve loi chuan gRPC
-		return nil, connect.NewError(connect.CodeInternal, err)
+		return nil, err
 	}
 
 	// Dong goi tra ve
@@ -49,7 +49,7 @@ func (h *AuthHandler) Login(
 
 	token, err := h.authService.Login(email, password)
 	if err != nil {
-		return nil, connect.NewError(connect.CodeInternal, err)
+		return nil, connect.NewError(connect.CodeUnauthenticated, err)
 	}
 
 	res := connect.NewResponse(&authv1.LoginResponse{

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"connectrpc.com/connect"
 	"github.com/longdaica/my-app/backend/interfaces"
 	"github.com/longdaica/my-app/backend/model"
 	"github.com/longdaica/my-app/backend/pkg/jwt"
@@ -26,7 +27,10 @@ func NewAuthService(repo interfaces.UserRepositoryInterface, mailSvc interfaces.
 func (s *authService) RegisterLogic(email, password, name string) error {
 	_, err := s.userRepo.FindByEmail(email)
 	if err == nil {
-		return errors.New("email này đã được sử dụng rồi!!")
+		return connect.NewError(
+			connect.CodeAlreadyExists,
+			errors.New("email already exists"),
+		)
 	}
 
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
@@ -63,7 +67,7 @@ func (s *authService) Login(email, password string) (string, error) {
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		return "", errors.New("sai tài khoản,  mật khẩu!!")
+		return "", errors.New("Incorrect password or account!!")
 	}
 
 	token, err := jwt.GenerateToken(user.ID, user.Email)
