@@ -1,10 +1,20 @@
 "use client";
 
-import { Alert, Box, Button, Container, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Checkbox,
+  CircularProgress,
+  Container,
+  FormControlLabel,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Cookies from "js-cookie";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useForm } from "react-hook-form";
 import { authService } from "../services/auth.service";
 import { PlainMessage } from "@bufbuild/protobuf";
@@ -13,6 +23,8 @@ import { LoginRequest } from "@/gen/auth/v1/auth_pb";
 export default function LoginPage() {
   const router = useRouter();
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [remeberMe, setRememberMe] = useState(false);
 
   const {
     register,
@@ -23,11 +35,13 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (data: PlainMessage<LoginRequest>) => {
+    setLoading(true);
     setMessage(null);
     const { data: res, error } = await authService.login(data);
 
     if (error) {
       setMessage({ type: "error", text: error });
+      setLoading(false);
       return;
     }
 
@@ -84,8 +98,19 @@ export default function LoginPage() {
             helperText={errors.password?.message as string}
           />
 
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, py: 1.5 }}>
-            Dang nhap
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={remeberMe}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setRememberMe(e.target.checked)}
+                color="primary"
+              />
+            }
+            label="Remember me"
+            sx={{ color: "text.secondary" }}
+          />
+          <Button type="submit" fullWidth variant="contained" disabled={loading} sx={{ mt: 3, mb: 2, py: 1.5 }}>
+            {loading ? <CircularProgress size={24} color="inherit" /> : "Submit"}
           </Button>
 
           <Box sx={{ textAlign: "center", mt: 2 }}>

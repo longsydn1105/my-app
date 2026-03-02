@@ -3,11 +3,22 @@
 import { RegisterRequest } from "@/gen/auth/v1/auth_pb";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Alert, Box, Button, Container, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  IconButton,
+  InputAdornment,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { authService } from "../services/auth.service";
 import { PlainMessage } from "@bufbuild/protobuf";
+import { Circle, Visibility, VisibilityOff } from "@mui/icons-material";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -30,9 +41,16 @@ export default function RegisterPage() {
     type: "success" | "error";
     text: string;
   } | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   // Hàm xử  lý khi bấm nút đăng ký
   const onSubmit = async (data: PlainMessage<RegisterRequest>) => {
+    setLoading(true);
     setMessage(null);
 
     const { data: res, error } = await authService.register(data);
@@ -41,6 +59,7 @@ export default function RegisterPage() {
         type: "error",
         text: error,
       });
+      setLoading(false);
       return;
     }
 
@@ -107,18 +126,34 @@ export default function RegisterPage() {
             margin="normal"
             fullWidth
             label="Mat Khau"
-            type="password"
+            type={showPassword ? "text" : "password"}
             {...register("password", {
               required: "Vui long nhap mat khau",
               minLength: { value: 6, message: "Pass ngắn quá, ít nhất 6 ký tự" },
             })}
+            error={!!errors.password}
+            helperText={errors.password?.message as string}
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton aria-label="toggle password visibility" onClick={handleClickShowPassword} edge="end">
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
+              htmlInput: {
+                "data-last-active-input": undefined,
+              } as React.InputHTMLAttributes<HTMLInputElement>,
+            }}
           />
 
           <TextField
             margin="normal"
             fullWidth
             label="Xac nhan mat khau"
-            type="password"
+            type={showPassword ? "text" : "password"}
             {...register("confirmPassword", {
               required: "Vui long nhap xac nhan mat khau",
               validate: (value: string) => {
@@ -130,10 +165,24 @@ export default function RegisterPage() {
             })}
             error={!!errors.confirmPassword}
             helperText={errors.confirmPassword?.message as string}
+            slotProps={{
+              input: {
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton aria-label="toggle password visibility" onClick={handleClickShowPassword} edge="end">
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              },
+              htmlInput: {
+                "data-last-active-input": undefined,
+              } as React.InputHTMLAttributes<HTMLInputElement>,
+            }}
           />
 
-          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2, py: 1.5 }}>
-            Dang ky ngay
+          <Button type="submit" fullWidth variant="contained" disabled={loading} sx={{ mt: 3, mb: 2, py: 1.5 }}>
+            {loading ? <CircularProgress size={24} color="inherit" /> : "Submit"}
           </Button>
 
           <Box sx={{ textAlign: "center", mt: 2 }}>
