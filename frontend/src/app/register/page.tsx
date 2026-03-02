@@ -71,7 +71,11 @@ export default function RegisterPage() {
         <Typography component="h1" variant="h5" sx={{ mb: 3, fontWeight: "bold", color: "#d22c19" }}>
           Tạo tài khoản
         </Typography>
-        {message && <Alert severity={message.type} sx={{ width: "100%", mb: 2 }}></Alert>}
+        {message && (
+          <Alert severity={message.type} sx={{ width: "100%", mb: 2 }}>
+            {message.text}
+          </Alert>
+        )}
 
         <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ width: "100%" }}>
           <TextField
@@ -92,7 +96,9 @@ export default function RegisterPage() {
               required: "Vui long nhap email",
               pattern: { value: /^\S+@\S+$/i, message: "email sai dinh dang" },
             })}
-            slotProps={{ htmlInput: { "data-last-active-input": undefined } as any }}
+            slotProps={{
+              htmlInput: { "data-last-active-input": undefined } as React.InputHTMLAttributes<HTMLInputElement>,
+            }}
             error={!!errors.email}
             helperText={errors.email?.message as string}
           />
